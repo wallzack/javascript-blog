@@ -9,7 +9,7 @@
     optTagsListSelector = '.list.tags a',
     optArticleAuthorSelector = '.post-author',
     optArticleSingleAuthorSelector = '.post-author a',
-    optAuthorListSelector = '.list.authors',
+    optAuthorSidebarSelector = '.list.authors',
     optCloudClassCount = 5,
     optCloudClassPrefix = 'tag-size-';
 
@@ -55,7 +55,7 @@
     /* [DONE] remove contents of titleList */
     const titleList = document.querySelector(optTitleListSelector);
     titleList.innerHTML = '';
-    // onsole.log('Removed ',titleList);
+    // console.log('Removed ',titleList);
 
     /* [DONE] for each article */
     const articles = document.querySelectorAll(optArticleSelector + customSelector);
@@ -254,14 +254,27 @@
     /* find all articles */
     const articles = document.querySelectorAll(optArticleSelector);
 
+    let htmlSidebar = '';
+    const authorSidebar = document.querySelector(optAuthorSidebarSelector);
+
+    articles.forEach((e)=>{
+      let author = e.getAttribute('data-author');
+      const asideAuthorLinkHTML = '<li><a href="#author-' + author + '"><span>' + author + '</span></a></li>';
+      if(htmlSidebar.includes(asideAuthorLinkHTML)){
+        return;
+      } else {
+        htmlSidebar = htmlSidebar + asideAuthorLinkHTML + '';
+      }
+      authorSidebar.innerHTML = htmlSidebar;
+    });
     /* START LOOP: for every article: */
     for(let article of articles){
 
       /* find author wrapper */
-      const authorList = article.querySelector(optArticleAuthorSelector);
-      console.log('found Author wrapper: ', authorList);
+      const authorInArticle = document.querySelector(optArticleAuthorSelector);
+      console.log('found Author wrapper: ', authorInArticle);
 
-      const authorsidebar = document.querySelectorAll(optAuthorListSelector);
+      const authorSidebar = document.querySelector(optAuthorSidebarSelector);
       /* make html variable with empty string */
       let html = '';
 
@@ -277,9 +290,6 @@
       html = html + authorLinkHTML;
       console.log('added code to html: ', html);
 
-      let htmlsidebar = '';
-      htmlsidebar = htmlsidebar + authorLinkHTML;
-
       /* [NEW] check if this link is NOT already in allAuthors */
       if(allAuthors.indexOf(articleAuthor) == -1){
         /*[NEW] add generated code to allTags allAuthors array */
@@ -287,16 +297,15 @@
       }
 
       /* add html for each author wrapper */
-      authorList.innerHTML = html;
-      authorsidebar.innerHTML = htmlsidebar;
-      console.log('blebleble: ', authorsidebar);
-      console.log('authorList: ', authorList);
+      authorInArticle.innerHTML = html;
+      authorSidebar.innerHTML = htmlSidebar;
+      console.log('authorSidebar: ', authorSidebar);
+      console.log('authorInArticle: ', authorInArticle);
       console.log('added html for each author: ', html);
     }
 
     /* END LOOP: for every article: */
   }
-
   generateAuthors();
 
   const authorClickHandler = function(event){
@@ -338,7 +347,7 @@
 
   function addClickListenersToAuthors(){
     /* find all links to authors */
-    const authorLinks = document.querySelectorAll(optArticleSingleAuthorSelector + ',' + optAuthorListSelector);
+    const authorLinks = document.querySelectorAll(optArticleSingleAuthorSelector + ',' + optAuthorSidebarSelector);
     console.log('found links to authors: ', authorLinks);
     /* START LOOP: for each link */
     for (let author of authorLinks) {
