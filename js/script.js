@@ -246,7 +246,14 @@
 
 
   /* GENERATE AUTHORS */
-  function generateAuthors(){
+
+  //To co ciągle nie działa:
+  //1. Nadaje nie tego autora do article1
+  //2. W pozostałych articles nie ma autora pod tytułem
+  //3. Nie filtruje listy artykułów po lewej na podstawie wybrania autora z listy po prawej
+  //4. Potrzeba dołożyć liczbę artykułów danego autora w nawiasie przy nazwisku autora na liście po prawej.
+
+    function generateAuthors(){
 
     /* [NEW] create a new variable allAuthors with an empty array */
     let allAuthors = [];
