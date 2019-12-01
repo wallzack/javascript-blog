@@ -253,7 +253,7 @@
   function generateAuthors() {
 
     /* [NEW] create a new variable allAuthors with an empty array */
-    let allAuthors = [];
+    let allAuthors = {};
 
     /* find all articles */
     const articles = document.querySelectorAll(optArticleSelector);
@@ -270,12 +270,12 @@
     let htmlSidebar = '';
     const authorSidebar = document.querySelector(optAuthorListSelector);
     articles.forEach((e)=>{
-      let autor = e.getAttribute('data-author');
-      const asideAuthorLinkHTML = '<li><a href="#author-' + autor + '"><span>' + autor + '</span></a></li>';
+      let author = e.getAttribute('data-author');
+      const asideAuthorLinkHTML = '<li><a href="#author-' + author + '"><span>' + author + '</span></a></li>';
       if(htmlSidebar.includes(asideAuthorLinkHTML)){
         return;
       } else {
-        htmlSidebar = htmlSidebar + asideAuthorLinkHTML + '';
+        htmlSidebar = htmlSidebar + asideAuthorLinkHTML  + " (" + htmlSidebar[e] + ")";
       }
       authorSidebar.innerHTML = htmlSidebar;
     });
@@ -306,9 +306,11 @@
       console.log('added code to html: ', html);
 
       /* [NEW] check if this link is NOT already in allAuthors */
-      if (allAuthors.indexOf(articleAuthor) == -1) {
+      if (!allAuthors.hasOwnProperty(articleAuthor)) {
         /*[NEW] add generated code to allTags allAuthors array */
-        allAuthors.push(articleAuthor);
+        allAuthors[articleAuthor] = 1;
+      } else {
+        allAuthors[articleAuthor]++;
       }
 
       /* add html for each author wrapper */
