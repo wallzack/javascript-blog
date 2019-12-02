@@ -1,4 +1,4 @@
-{
+{ 
   'use strict';
 
   const optArticleSelector = '.post',
@@ -264,7 +264,7 @@
     for (let article of articles) {
 
       let author = article.getAttribute('data-author');
-      
+
       /* find author wrapper */
       const authorList = article.querySelector(optArticleAuthorSelector);
       //console.log('found Author wrapper: ', authorList);
@@ -284,7 +284,7 @@
       } else {
         allAuthors[articleAuthor]++;
       }
-   
+
 
       /* generate HTML of the link */
       const authorLinkHTML = '<li><a href="#author-' + articleAuthor + '"><span>' + articleAuthor + '</span></a></li>';
@@ -299,7 +299,7 @@
       // console.log('authorList: ', authorList);
       // console.log('added html for each author: ', html);
     }
-  
+
     for(let author in allAuthors){
       const asideAuthorLinkHTML = '<li><a href="#author-' + author + '"><span>' + author + " (" + allAuthors[author] + ")" + '</span></a></li>';
       htmlSidebar += asideAuthorLinkHTML;
@@ -330,7 +330,7 @@
     //console.log('replaced #author- with:', author);
     /* find all author links with class active */
     const activeAuthors = document.querySelectorAll('a.active[href^="#author-"]');
-   
+
     /* START LOOP: for each active author link */
     for (let activeAuthor of activeAuthors) {
 
