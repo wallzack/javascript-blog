@@ -10,8 +10,6 @@
     optArticleAuthorSelector = '.post-author',
     optArticleSingleAuthorSelector = '.post-author a',
     optAuthorListSelector = '.list.authors',
-    //tutaj dodatkowe selektory który wykorzystywany jest w funnkcji zmieniającej
-    //href. Tutaj można zrobić refactor bo spokojnie można to zrobić bez tego.
     optAuthorListElem = '.list.authors li a',
     optCloudClassCount = 5,
     optCloudClassPrefix = 'tag-size-';
@@ -54,10 +52,11 @@
   };
 
   function generateTitleLinks(customSelector = '') {
+
     /* [DONE] remove contents of titleList */
     const titleList = document.querySelector(optTitleListSelector);
     titleList.innerHTML = '';
-    // onsole.log('Removed ',titleList);
+    //console.log('Removed ',titleList);
 
     /* [DONE] for each article */
     const articles = document.querySelectorAll(optArticleSelector + customSelector);
@@ -69,7 +68,7 @@
 
       /* [DONE] get the article id */
       const articleId = article.getAttribute('id');
-      // onsole.log('articleId', articleId);
+      // console.log('articleId', articleId);
 
       /* [DONE] find the title element */
       const articleTitle = article.querySelector(optTitleSelector).innerHTML;
@@ -201,11 +200,11 @@
 
     /* make a new constant "href" and read the attribute "href" of the clicked element */
     const href = clickedElement.getAttribute('href');
-    console.log('href:>>>>>>>>>>>', href);
+    //console.log('href:>>>>>>>>>>>', href);
 
     /* make a new constant "tag" and extract tag from the "href" constant */
     const tag = href.replace('#tag-', '');
-    console.log('replaced #tag- with: ', tag);
+    //console.log('replaced #tag- with: ', tag);
 
     /* find all tag links with class active */
     const activeTags = document.querySelectorAll('a.active[href^="#tag-"]');
@@ -258,68 +257,55 @@
     /* find all articles */
     const articles = document.querySelectorAll(optArticleSelector);
 
-    //Htmlsidebar ustawiamy poza pętlą żeby się nie zerowało za każdym razem
-    //For each wstawiłem żeby wystawić autorów z prawej storny można to zrobić na
-    //100 różnych sposobów. co do liczby artykułów można by dodatkowo zliczać wystąpienia
-    //w pętli czyli w przypadku w którym teraz jest return dodać jakiś index który można inkrementować.
-    //To też możesz zmienić prawdopodobnie jakby się wczytać w kod to tam już przygotowane są pod to jakieś strukturki.
-
-
-    //samo for each działa tak jal for of coś e w funkcji jest odpowiednikiem poszczególnego artykułu
-    // robię link z autorem później sprawdzam czy już jest w naszym stringu jak nie to dodaj
     let htmlSidebar = '';
     const authorSidebar = document.querySelector(optAuthorListSelector);
-    articles.forEach((e)=>{
-      let author = e.getAttribute('data-author');
-      const asideAuthorLinkHTML = '<li><a href="#author-' + author + '"><span>' + author + '</span></a></li>';
-      if(htmlSidebar.includes(asideAuthorLinkHTML)){
-        return;
-      } else {
-        htmlSidebar = htmlSidebar + asideAuthorLinkHTML  + " (" + htmlSidebar[e] + ")";
-      }
-      authorSidebar.innerHTML = htmlSidebar;
-    });
 
     /* START LOOP: for every article: */
     for (let article of articles) {
 
+      let author = article.getAttribute('data-author');
+      
       /* find author wrapper */
       const authorList = article.querySelector(optArticleAuthorSelector);
-      console.log('found Author wrapper: ', authorList);
+      //console.log('found Author wrapper: ', authorList);
 
-
-      //ZMIANA SELEKTORA TO ŁAPIE TYLKO ELEMENT UL DO KTÓ©EGO BĘDZIEMY WRZUCAĆ AUTORÓŒ
-      const authorSidebar = document.querySelector(optAuthorListSelector);
+      //const authorSidebar = document.querySelector(optAuthorListSelector);
       /* make html variable with empty string */
       let html = '';
 
       /* get author from data-author attribute */
       const articleAuthor = article.getAttribute('data-author');
-      console.log('found Authors from data-author: ', articleAuthor);
+      //console.log('found Authors from data-author: ', articleAuthor);
 
-      /* generate HTML of the link */
-      const authorLinkHTML = '<li><a href="#author-' + articleAuthor + '"><span>' + articleAuthor + '</span></a></li>';
-      console.log('generated authorLinkHTML: ', authorLinkHTML);
-
-      /* add generated code to html variable */
-      html = html + authorLinkHTML;
-      console.log('added code to html: ', html);
-
-      /* [NEW] check if this link is NOT already in allAuthors */
-      if (!allAuthors.hasOwnProperty(articleAuthor)) {
-        /*[NEW] add generated code to allTags allAuthors array */
+       /* [NEW] check if this link is NOT already in allAuthors */
+      if(!allAuthors.hasOwnProperty(articleAuthor)) {
         allAuthors[articleAuthor] = 1;
+
       } else {
         allAuthors[articleAuthor]++;
       }
+   
+
+      /* generate HTML of the link */
+      const authorLinkHTML = '<li><a href="#author-' + articleAuthor + '"><span>' + articleAuthor + '</span></a></li>';
+      //console.log('generated authorLinkHTML: ', authorLinkHTML);
+
+      /* add generated code to html variable */
+      html = html + authorLinkHTML;
+      //console.log('added code to html: ', html);
 
       /* add html for each author wrapper */
       authorList.innerHTML = html;
-      authorSidebar.innerHTML = htmlSidebar;
-      console.log('blebleble: ', authorSidebar);
-      console.log('authorList: ', authorList);
-      console.log('added html for each author: ', html);
+      // console.log('authorList: ', authorList);
+      // console.log('added html for each author: ', html);
     }
+  
+    for(let author in allAuthors){
+      const asideAuthorLinkHTML = '<li><a href="#author-' + author + '"><span>' + author + " (" + allAuthors[author] + ")" + '</span></a></li>';
+      htmlSidebar += asideAuthorLinkHTML;
+
+    }
+    authorSidebar.innerHTML = htmlSidebar;
 
     /* END LOOP: for every article: */
   }
@@ -329,26 +315,22 @@
   const authorClickHandler = function (event) {
     event.preventDefault();
     const clickedElement = this;
-    console.log('Author was clicked');
-    console.log(clickedElement, ' cliked element WW');
-    // Tutaj dodałem aktywację elementu -> nie sprawdzam czy wyżej już to było robione. Ponieważ nie ma tego w funkcji to
-    //być może powinno się samo ustawiać przy starcie aplikacji ładując pierwszy artykuł i tam dodawane active do autora oraz tagów
-    //przez co później w funkcji usuwana jest ta clasa i dodawana konkretnemu autorowi
+    // console.log('Author was clicked');
+    // console.log(clickedElement, ' cliked element WW');
+
     clickedElement.classList.add('active');
 
 
     /* make a new constant "href" and read the attribute "href" of the clicked element */
     const href = clickedElement.getAttribute('href');
-    console.log('href:', href);
+    //console.log('href:', href);
 
     /* make a new constant "author" and extract author from the "href" constant */
     const author = href.replace('#author-', '');
-    console.log('replaced #author- with:', author);
+    //console.log('replaced #author- with:', author);
     /* find all author links with class active */
     const activeAuthors = document.querySelectorAll('a.active[href^="#author-"]');
-    //Tutaj nie było wcześniej żadnego elementu a więc pusta tablica, co dalej idzie nie da się dodać active ani usunąć ani nie dodaje click listnera
-    console.log(activeAuthors, ' sprawdzenie active autors po tym wiedziałem gdzie jest błąd');
-
+   
     /* START LOOP: for each active author link */
     for (let activeAuthor of activeAuthors) {
 
@@ -369,13 +351,12 @@
       /* execute function "generateTitleLinks" with article selector as argument */
       generateTitleLinks('[data-author="' + author + '"]');
     }
-  };
-  //Poniżej usunąłem jeden nawias który powodował że funkcje od któregoś miejsca się nie odpalały
+  }
 
   function addClickListenersToAuthors() {
     /* find all links to authors */
     const authorLinks = document.querySelectorAll(optArticleSingleAuthorSelector + ',' + optAuthorListElem);
-    console.log('found links to authors: ', authorLinks);
+    //console.log('found links to authors: ', authorLinks);
 
     /* START LOOP: for each link */
     for (let author of authorLinks) {
